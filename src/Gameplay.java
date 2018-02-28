@@ -17,13 +17,10 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
 	Snake snake = new Snake();
 
-	private int[] enemyXpos = { 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450,
+	final static int[] enemyXpos = { 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450,
 			475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850 };
-	private int[] enemyYpos = { 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500,
+	final static int[] enemyYpos = { 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500,
 			525, 550, 575, 600, 625 };
-
-	List<Integer> wallsX = new ArrayList<Integer>();
-	List<Integer> wallsY = new ArrayList<Integer>();
 
 	private boolean left = false;
 	private boolean right = false;
@@ -49,6 +46,8 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 	private int Ypos = random.nextInt(23);
 
 	private boolean isColission = false;
+	
+	List<Wall> wallList = new ArrayList<Wall>();
 
 	public Gameplay() {
 
@@ -123,18 +122,17 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			Xpos = random.nextInt(34);
 			Ypos = random.nextInt(23);
 
-			wallsX.add(enemyXpos[random.nextInt(34)]);
-			wallsY.add(enemyYpos[random.nextInt(23)]);
+			wallList.add(new Wall());
 		}
 
 		enemyImage.paintIcon(this, g, enemyXpos[Xpos], enemyYpos[Ypos]);
 
-		for (int i = 0; i < wallsX.size(); i++) {
-			wallImage.paintIcon(this, g, wallsX.get(i), wallsY.get(i));
+		for (int i = 0; i < wallList.size(); i++) {
+			wallImage.paintIcon(this, g, wallList.get(i).getX(), wallList.get(i).getY());
 		}
 
-		for (int i = 0; i < wallsX.size(); i++) {
-			if (wallsX.get(i) == snake.getSnakeXlength()[0] && wallsY.get(i) == snake.getSnakeYlength()[0]) {
+		for (int i = 0; i < wallList.size(); i++) {
+			if (wallList.get(i).getX() == snake.getSnakeXlength()[0] && wallList.get(i).getY() == snake.getSnakeYlength()[0]) {
 				isColission = true;
 			}
 		}
@@ -168,8 +166,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			score = 0;
 			snake.setLengthOfSnake(3);
 			isColission = false;
-			wallsX.clear();
-			wallsY.clear();
+			wallList.clear();
 			repaint();
 		}
 

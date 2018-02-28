@@ -15,8 +15,6 @@ import javax.swing.Timer;
 
 public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
-	Snake snake = new Snake();
-
 	final static int[] enemyXpos = { 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450,
 			475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850 };
 	final static int[] enemyYpos = { 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500,
@@ -46,6 +44,9 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 	private int Ypos = random.nextInt(23);
 
 	private boolean isColission = false;
+
+	Snake snake = new Snake();
+	CollisionDetector coldet = new CollisionDetector();
 	
 	List<Wall> wallList = new ArrayList<Wall>();
 
@@ -131,16 +132,9 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			wallImage.paintIcon(this, g, wallList.get(i).getX(), wallList.get(i).getY());
 		}
 
-		for (int i = 0; i < wallList.size(); i++) {
-			if (wallList.get(i).getX() == snake.getSnakeXlength()[0] && wallList.get(i).getY() == snake.getSnakeYlength()[0]) {
-				isColission = true;
-			}
-		}
+		
 
-		for (int i = 1; i < snake.getLengthOfSnake(); i++) {
-
-			if (snake.getSnakeXlength()[i] == snake.getSnakeXlength()[0]
-					&& snake.getSnakeYlength()[i] == snake.getSnakeYlength()[0] || isColission) {
+			if (coldet.collision(snake) || coldet.collision(snake, wallList)) {
 				right = false;
 				left = false;
 				up = false;
@@ -152,8 +146,10 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
 				g.setFont(new Font("arial", Font.BOLD, 20));
 				g.drawString("Space to RESTART", 350, 340);
+				
+				timer.stop();
 			}
-		}
+		
 
 		g.dispose();
 	}
@@ -167,6 +163,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			snake.setLengthOfSnake(3);
 			isColission = false;
 			wallList.clear();
+			timer.start();
 			repaint();
 		}
 

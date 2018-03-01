@@ -20,16 +20,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 	final static int[] enemyYpos = { 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500,
 			525, 550, 575, 600, 625 };
 
-	private boolean left = false;
-	private boolean right = false;
-	private boolean up = false;
-	private boolean down = false;
 
-	private ImageIcon leftmouth;
-	private ImageIcon rigthmouth;
-	private ImageIcon upmouth;
-	private ImageIcon downmouth;
-	private ImageIcon snakeImage;
 	private ImageIcon titleImage;
 	private ImageIcon enemyImage;
 	private ImageIcon wallImage;
@@ -43,7 +34,6 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 	private int Xpos = random.nextInt(34);
 	private int Ypos = random.nextInt(23);
 
-	private boolean isColission = false;
 
 	Snake snake = new Snake();
 	CollisionDetector coldet = new CollisionDetector();
@@ -57,8 +47,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 		setFocusTraversalKeysEnabled(false);
 		timer = new Timer(delay, this);
 		timer.start();
-
-	}
+		}
 
 	public void paint(Graphics g) {
 
@@ -82,37 +71,8 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 		g.setColor(Color.black);
 		g.setFont(new Font("arial", Font.PLAIN, 14));
 		g.drawString("Score: " + score, 780, 30);
-
-		rigthmouth = new ImageIcon("rightmouth.png");
-		rigthmouth.paintIcon(this, g, snake.getSnakeXlength()[0], snake.getSnakeYlength()[0]);
-
-		for (int i = 0; i < snake.getLengthOfSnake(); i++) {
-
-			if (i == 0 && right) {
-				rigthmouth = new ImageIcon("rightmouth.png");
-				rigthmouth.paintIcon(this, g, snake.getSnakeXlength()[i], snake.getSnakeYlength()[i]);
-			}
-
-			if (i == 0 && left) {
-				leftmouth = new ImageIcon("leftmouth.png");
-				leftmouth.paintIcon(this, g, snake.getSnakeXlength()[i], snake.getSnakeYlength()[i]);
-			}
-
-			if (i == 0 && up) {
-				upmouth = new ImageIcon("upmouth.png");
-				upmouth.paintIcon(this, g, snake.getSnakeXlength()[i], snake.getSnakeYlength()[i]);
-			}
-
-			if (i == 0 && down) {
-				downmouth = new ImageIcon("downmouth.png");
-				downmouth.paintIcon(this, g, snake.getSnakeXlength()[i], snake.getSnakeYlength()[i]);
-			}
-
-			if (i != 0) {
-				snakeImage = new ImageIcon("snakeimage.png");
-				snakeImage.paintIcon(this, g, snake.getSnakeXlength()[i], snake.getSnakeYlength()[i]);
-			}
-		}
+		
+		snake.drawSnake(this, g);
 
 		enemyImage = new ImageIcon("enemy.png");
 		wallImage = new ImageIcon("wall.png");
@@ -135,10 +95,10 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 		
 
 			if (coldet.collision(snake) || coldet.collision(snake, wallList)) {
-				right = false;
-				left = false;
-				up = false;
-				down = false;
+				snake.setRight(false);
+				snake.setLeft(false);
+				snake.setUp(false);
+				snake.setDown(false);
 
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("arial", Font.BOLD, 50));
@@ -161,7 +121,6 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			snake.restartSnake();
 			score = 0;
 			snake.setLengthOfSnake(3);
-			isColission = false;
 			wallList.clear();
 			timer.start();
 			repaint();
@@ -169,71 +128,19 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 
-			snake.setMoves(snake.getMoves() + 1);
-			right = true;
-
-			if (!left) {
-
-				right = true;
-
-			} else {
-
-				right = false;
-				left = true;
-			}
-
-			up = false;
-			down = false;
+			snake.moveRight();
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-
-			snake.setMoves(snake.getMoves() + 1);
-			left = true;
-
-			if (!right) {
-				left = true;
-
-			} else {
-				left = false;
-				right = true;
-			}
-
-			up = false;
-			down = false;
+			snake.moveLeft();
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-
-			snake.setMoves(snake.getMoves() + 1);
-			up = true;
-
-			if (!down) {
-				up = true;
-
-			} else {
-				up = false;
-				down = true;
-			}
-
-			left = false;
-			right = false;
+			snake.moveUp();
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-
-			snake.setMoves(snake.getMoves() + 1);
-			down = true;
-
-			if (!up) {
-				down = true;
-			} else {
-				down = false;
-				up = true;
-			}
-
-			left = false;
-			right = false;
+			snake.moveDown();
 		}
 
 	}
@@ -255,7 +162,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
 		timer.start();
 
-		if (right) {
+		if (snake.isRight()) {
 
 			for (int i = snake.getLengthOfSnake() - 1; i >= 0; i--) {
 				snake.setSnakeYlength(i+1, snake.getSnakeYlength()[i]);
@@ -278,7 +185,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 
 		}
 
-		if (left) {
+		if (snake.isLeft()) {
 
 			for (int i = snake.getLengthOfSnake() - 1; i >= 0; i--) {
 				snake.setSnakeYlength(i+1, snake.getSnakeYlength()[i]);
@@ -300,7 +207,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			repaint();
 		}
 
-		if (up) {
+		if (snake.isUp()) {
 
 			for (int i = snake.getLengthOfSnake() - 1; i >= 0; i--) {
 				snake.setSnakeXlength(i+1, snake.getSnakeXlength()[i]);
@@ -322,7 +229,7 @@ public class Gameplay extends JPanel implements KeyListener, ActionListener {
 			repaint();
 		}
 
-		if (down) {
+		if (snake.isDown()) {
 
 			for (int i = snake.getLengthOfSnake() - 1; i >= 0; i--) {
 				snake.setSnakeXlength(i+1, snake.getSnakeXlength()[i]);

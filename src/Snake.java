@@ -9,18 +9,12 @@ public class Snake {
 	private int[] snakeYlength = new int[750];
 	private int lengthOfSnake = 3;
 	private int moves = 0;
-	
+
 	private boolean left = false;
 	private boolean right = false;
 	private boolean up = false;
 	private boolean down = false;
 
-	private ImageIcon leftmouth;
-	private ImageIcon rigthmouth;
-	private ImageIcon upmouth;
-	private ImageIcon downmouth;
-	private ImageIcon snakeImage;
-	
 	public Snake() {
 
 		snakeXlength[2] = 50;
@@ -34,30 +28,31 @@ public class Snake {
 	}
 
 	public void drawSnake(Component c, Graphics g) {
-		for (int i = 0; i < getLengthOfSnake(); i++) {
+		ImageIcon leftmouth = new ImageIcon("leftmouth.png");
+		ImageIcon rigthmouth = new ImageIcon("rightmouth.png");
+		ImageIcon upmouth = new ImageIcon("upmouth.png");
+		ImageIcon downmouth = new ImageIcon("downmouth.png");
+		ImageIcon snakeImage = new ImageIcon("snakeimage.png");
 
-			if (i == 0 && right) {
-				rigthmouth = new ImageIcon("rightmouth.png");
+		for (int i = 0; i < lengthOfSnake; i++) {
+
+			if (i == 0 && right || i == 0 && lengthOfSnake == 3) {
 				rigthmouth.paintIcon(c, g, getSnakeXlength()[i], getSnakeYlength()[i]);
 			}
 
 			if (i == 0 && left) {
-				leftmouth = new ImageIcon("leftmouth.png");
 				leftmouth.paintIcon(c, g, getSnakeXlength()[i], getSnakeYlength()[i]);
 			}
 
 			if (i == 0 && up) {
-				upmouth = new ImageIcon("upmouth.png");
 				upmouth.paintIcon(c, g, getSnakeXlength()[i], getSnakeYlength()[i]);
 			}
 
 			if (i == 0 && down) {
-				downmouth = new ImageIcon("downmouth.png");
 				downmouth.paintIcon(c, g, getSnakeXlength()[i], getSnakeYlength()[i]);
 			}
 
 			if (i != 0) {
-				snakeImage = new ImageIcon("snakeimage.png");
 				snakeImage.paintIcon(c, g, getSnakeXlength()[i], getSnakeYlength()[i]);
 			}
 		}
@@ -97,7 +92,7 @@ public class Snake {
 		up = false;
 		down = false;
 	}
-	
+
 	public void moveUp() {
 		moves++;
 		up = true;
@@ -128,12 +123,12 @@ public class Snake {
 		left = false;
 		right = false;
 	}
-	
+
 	public void restartSnake() {
 
 		moves = 0;
 		lengthOfSnake = 3;
-		
+
 		snakeXlength[2] = 50;
 		snakeXlength[1] = 75;
 		snakeXlength[0] = 100;

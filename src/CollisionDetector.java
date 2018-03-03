@@ -30,5 +30,15 @@ public class CollisionDetector {
 		return isCollision;
 	}
 	
+	public boolean eatFood(Snake snake, Food food) {
+
+		if (food.getX() == snake.getSnakeXlength()[0] && food.getY() == snake.getSnakeYlength()[0]) {
+			Gameplay.score++;
+			snake.setLengthOfSnake(snake.getLengthOfSnake() + 1);
+			
+			return true;
+		}else return false;
+
+	}
 	
 }

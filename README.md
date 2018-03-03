@@ -1,5 +1,5 @@
 # Snake2D
-A simple snake game in Java.
+A simple snake game in Java 8.
 Using Java Swing to display the game.
 
 # How it looks:
